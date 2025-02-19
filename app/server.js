@@ -1,6 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const path = require('path');
+const { AllRoutes } = require('./router/index.router');
 
 module.exports = class Application {
     #app = express();
@@ -31,14 +32,19 @@ module.exports = class Application {
             });
     }
 
-    connectToMongoDB() {
-        mongoose.connect(this.#DB_URI)
-            .then(() => console.log('Connected to MongoDB!'))
-            .catch((error) => console.error('Error connecting to MongoDB:', error));
+    async connectToMongoDB() {
+        
+            const connections = await mongoose.connect(this.#DB_URI)
+            .then(()=> console.log(`Connected to MONGODB!`))
+            .catch((err)=> console.error(`Error during connecting to MONGODB ${err.message}`))
+        
+            return connections;
+        
+       
     }
 
     createRoutes() {
-        // Add your routes here
+        this.#app.use(AllRoutes);
     }
 
     errorHandling() {
